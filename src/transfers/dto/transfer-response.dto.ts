@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { TransferStatus } from '../entities/transfer.entity.js';
 import { UserResponseDto } from '../../users/dto/user-response.dto.js';
 
 export class TransferResponseDto {
@@ -8,9 +7,6 @@ export class TransferResponseDto {
 
   @ApiProperty({ example: 100 })
   amount: number;
-
-  @ApiProperty({ example: 'COMPLETED', enum: TransferStatus })
-  status: TransferStatus;
 
   @ApiProperty({ type: UserResponseDto })
   fromUser: UserResponseDto;
@@ -24,7 +20,6 @@ export class TransferResponseDto {
   constructor(transfer: any) {
     this.id = transfer.id;
     this.amount = Number(transfer.amount);
-    this.status = transfer.status;
     this.fromUser = transfer.fromUser
       ? new UserResponseDto(transfer.fromUser)
       : transfer.fromUser;

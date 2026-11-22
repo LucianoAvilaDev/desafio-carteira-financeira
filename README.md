@@ -65,7 +65,7 @@ pnpm start
 pnpm start:prod
 ```
 
-Após qualquer alteração em qualquer entity, é necessário rodar as migrations.
+Após qualquer alteração em qualquer entity, é necessário rodar as migrations. O banco (local ou docker) deve estar rodando.
 
 ```bash
 pnpm migration:generate src/migrations/<NomeDoAjuste>

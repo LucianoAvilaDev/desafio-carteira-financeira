@@ -9,7 +9,7 @@ import { User } from '../users/entities/user.entity.js';
 import { CreateTransferDto } from './dto/create-transfer.dto.js';
 import { GetTransfersQueryDto } from './dto/get-transfers-query.dto.js';
 import { TransferResponseDto } from './dto/transfer-response.dto.js';
-import { Transfer, TransferStatus } from './entities/transfer.entity.js';
+import { Transfer } from './entities/transfer.entity.js';
 
 @Injectable()
 export class TransfersService {
@@ -73,7 +73,6 @@ export class TransfersService {
         fromUserId,
         toUserId: toUser.id,
         amount: dto.amount,
-        status: TransferStatus.COMPLETED,
       });
 
       const saved = await queryRunner.manager.save(transfer);
@@ -95,7 +94,6 @@ export class TransfersService {
     const {
       page = 1,
       limit = 10,
-      status,
       type,
       account,
       branch,
@@ -119,10 +117,6 @@ export class TransfersService {
         '(transfer.fromUserId = :userId OR transfer.toUserId = :userId)',
         { userId },
       );
-    }
-
-    if (status) {
-      qb.andWhere('transfer.status = :status', { status });
     }
 
     if (account) {

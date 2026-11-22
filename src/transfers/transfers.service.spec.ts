@@ -4,7 +4,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { TransfersService } from './transfers.service.js';
-import { Transfer, TransferStatus } from './entities/transfer.entity.js';
+import { Transfer } from './entities/transfer.entity.js';
 import { User } from '../users/entities/user.entity.js';
 import { CreateTransferDto } from './dto/create-transfer.dto.js';
 import { GetTransfersQueryDto } from './dto/get-transfers-query.dto.js';
@@ -170,7 +170,6 @@ describe('TransfersService', () => {
           fromUserId: 'uuid-admin',
           toUserId: 'uuid-maria',
           amount: 100,
-          status: TransferStatus.COMPLETED,
         }),
       );
 
@@ -409,23 +408,6 @@ describe('TransfersService', () => {
       expect(mockQb.where).toHaveBeenCalledWith('transfer.toUserId = :userId', {
         userId: 'uuid-admin',
       });
-    });
-
-    it('deve filtrar por status quando informado', async () => {
-      mockQb.getManyAndCount.mockResolvedValue([[], 0]);
-
-      const query = {
-        page: 1,
-        limit: 10,
-        status: TransferStatus.COMPLETED,
-      } as GetTransfersQueryDto;
-
-      await service.findAll('uuid-admin', query);
-
-      expect(mockQb.andWhere).toHaveBeenCalledWith(
-        'transfer.status = :status',
-        { status: TransferStatus.COMPLETED },
-      );
     });
 
     it('deve filtrar por account + branch quando informado', async () => {

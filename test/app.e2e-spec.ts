@@ -106,8 +106,6 @@ describe('App e2e', () => {
       expect(body.account).toBe('23434-4');
       expect(body.branch).toBe('123-4');
       expect(body).not.toHaveProperty('password');
-
-      userId = body.id;
     });
 
     it('deve criar um usuário com o amount informado como saldo inicial', async () => {
@@ -309,7 +307,13 @@ describe('App e2e', () => {
 
       expect(res.body).toHaveProperty('id');
       expect(Number(res.body.amount)).toBe(100.5);
-      expect(res.body.status).toBe('COMPLETED');
+      expect(res.body.fromUser.id).toBe(userId);
+      expect(res.body.toUser.id).toBe(user2Id);
+      expect(res.body.fromUser.name).toBe('Luciano');
+      expect(res.body.toUser.name).toBe('Maria');
+      expect(res.body.fromUser).not.toHaveProperty('password');
+      expect(res.body.toUser).not.toHaveProperty('password');
+      expect(res.body).not.toHaveProperty('status');
     });
 
     it('deve retornar 401 ao tentar transferir sem token', async () => {

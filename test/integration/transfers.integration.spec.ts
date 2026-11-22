@@ -2,10 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
-import {
-  Transfer,
-  TransferStatus,
-} from '../../src/transfers/entities/transfer.entity.js';
+import { Transfer } from '../../src/transfers/entities/transfer.entity.js';
 import { TransfersService } from '../../src/transfers/transfers.service.js';
 import { CreateTransferDto } from '../../src/transfers/dto/create-transfer.dto.js';
 import { GetTransfersQueryDto } from '../../src/transfers/dto/get-transfers-query.dto.js';
@@ -98,7 +95,6 @@ describe('TransfersService - Integração (carteira_test)', () => {
     };
     const transfer = await service.create(fromUser.id, dto);
 
-    expect(transfer.status).toBe(TransferStatus.COMPLETED);
     expect(Number(transfer.amount)).toBe(100);
 
     const fromAtualizado = await usersRepository.findOneBy({ id: fromUser.id });

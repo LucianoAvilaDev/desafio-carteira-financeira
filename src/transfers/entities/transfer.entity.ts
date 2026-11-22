@@ -8,11 +8,6 @@ import {
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity.js';
 
-export enum TransferStatus {
-  COMPLETED = 'COMPLETED',
-  FAILED = 'FAILED',
-}
-
 @Entity('transfers')
 export class Transfer {
   @PrimaryGeneratedColumn('uuid')
@@ -34,13 +29,6 @@ export class Transfer {
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   amount: number;
-
-  @Column({
-    type: 'enum',
-    enum: TransferStatus,
-    default: TransferStatus.COMPLETED,
-  })
-  status: TransferStatus;
 
   @CreateDateColumn()
   createdAt: Date;

@@ -2,7 +2,7 @@ import { jest } from '@jest/globals';
 import { Test, TestingModule } from '@nestjs/testing';
 import { TransfersController } from './transfers.controller.js';
 import { TransfersService } from './transfers.service.js';
-import { Transfer, TransferStatus } from './entities/transfer.entity.js';
+import { Transfer } from './entities/transfer.entity.js';
 import { CreateTransferDto } from './dto/create-transfer.dto.js';
 import { GetTransfersQueryDto } from './dto/get-transfers-query.dto.js';
 import { TransferResponseDto } from './dto/transfer-response.dto.js';
@@ -89,7 +89,6 @@ describe('TransfersController', () => {
       const transferFromService = TransferFactory.build({
         id: 'uuid-transfer',
         amount: 100,
-        status: TransferStatus.COMPLETED,
         fromUserId: fromUser.id,
         toUserId: toUser.id,
         fromUser,
@@ -108,7 +107,6 @@ describe('TransfersController', () => {
 
       expect(result.id).toBe('uuid-transfer');
       expect(Number(result.amount)).toBe(100);
-      expect(result.status).toBe('COMPLETED');
 
       expect(result.fromUser).not.toHaveProperty('password');
       expect(result.toUser).not.toHaveProperty('password');
@@ -226,7 +224,6 @@ describe('TransfersController', () => {
       const transfer = TransferFactory.build({
         id: 'uuid-transfer',
         amount: 100,
-        status: TransferStatus.COMPLETED,
         fromUser,
         toUser,
       });

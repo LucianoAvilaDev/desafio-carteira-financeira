@@ -45,32 +45,6 @@ cd desafio-carteira-financeira
 
 # Instala dependências
 pnpm install
-
-# Pelo docker não precisa rodar migrations, seeders e nem start porque estão automatizado
-# Caso não for usar o docker, rode-os.
-pnpm migration:run
-
-pnpm seed:run
-
-# Se for modo dev com watch
-pnpm start:dev
-
-# Se for modo dev com watch e debugger (pode usar breakpoints)
-pnpm start:debug
-
-# Sem watch
-pnpm start
-
-# Modo produção - compila na pasta dist e roda ela
-pnpm start:prod
-```
-
-Após qualquer alteração em qualquer entity, é necessário rodar as migrations. O banco (local ou docker) deve estar rodando.
-
-```bash
-pnpm migration:generate src/migrations/<NomeDoAjuste>
-
-pnpm migration:run
 ```
 
 ---
@@ -106,7 +80,46 @@ SWAGGER_PATH="/api/documentation"
 
 ---
 
-## 4. Rodar com Docker (recomendado)
+## 4. Rodar projeto
+
+### 4.1 Sem Docker
+
+```bash
+
+# Se for modo dev com watch
+pnpm start:dev
+
+# Se for modo dev com watch e debugger (pode usar breakpoints)
+pnpm start:debug
+
+# Sem watch
+pnpm start
+
+# Modo produção - compila na pasta dist e roda ela
+pnpm start:prod
+
+# Roda migrations
+pnpm migration:run
+
+# Roda seeders
+pnpm seed:run
+
+```
+
+Após qualquer alteração em qualquer entity, é necessário rodar as migrations. O banco (local ou docker) deve estar rodando.
+
+```bash
+# Gera migration nova com entidades alteradas no estado atual
+pnpm migration:generate src/migrations/<NomeDoAjuste>
+
+# Altera o banco com as migrations
+pnpm migration:run
+
+# Popula o banco com as seeders
+pnpm seed:run
+```
+
+### 4.2 Com Docker (recomendado)
 
 - **WINDOWS** - Inicie o Docker desktop e aguarde o status _ENGINE RUNNING_.
 - **LINUX**:
@@ -124,11 +137,7 @@ SWAGGER_PATH="/api/documentation"
   sudo systemctl status docker
   ```
 
----
-
-### 5. Subir tudo - banco + API
-
-- Modo desenvolvimento
+Rodar no Modo desenvolvimento
 
 ```bash
 # Inicia
@@ -141,7 +150,7 @@ pnpm docker:dev:down
 pnpm docker:dev:delete
 ```
 
-- Modo produção
+Rodar no Modo produção
 
 ```bash
 # Inicia
@@ -160,9 +169,24 @@ pnpm docker:prod:delete
 | Saúde da API         | http://localhost:3000/health            |
 | Documentação Swagger | http://localhost:3000/api/documentation |
 
+- Após qualquer alteração em qualquer entity, é necessário rodar as migrations. O banco (local ou docker) deve estar rodando.
+- **Obs**: o container roda **migration:run** e **seed:run** durante o build, mas não roda novamente pelo _watch_, logo é necessário rodar os comandos novamente caso hajam alterações em migrations ou seeders.
+
+```bash
+# Gera migration nova com entidades alteradas no estado atual
+pnpm migration:generate src/migrations/<NomeDoAjuste>
+
+# Altera o banco com as migrations
+pnpm migration:run
+
+# Popula o banco com as seeders
+pnpm seed:run
+
+```
+
 ---
 
-## 6. Como usar a API
+## 5. Como usar a API
 
 **Cadastro, Login e autenticação**
 
@@ -182,7 +206,7 @@ pnpm docker:prod:delete
 
 ---
 
-## 7. Testes
+## 6. Testes
 
 ```bash
 # Rodar uma folha de teste específica

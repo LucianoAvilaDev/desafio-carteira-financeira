@@ -1,0 +1,53 @@
+services:
+  db:
+    image: postgres:16
+    container_name: carteira-db
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - '5432:5432'
+    volumes:
+      - carteira-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: .
+    container_name: carteira-api
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      # Main
+      PORT: ${PORT}
+      API_URL: ${API_URL}
+
+      # JWT - a API usa para assinar e validar o token
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN}
+
+      # Postgres - tem que bater com o serviço db lá em cima
+      DB_HOST: db
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_SYNC: ${DB_SYNC}
+
+      # Swagger - o main.ts vai ler essas para montar a doc
+      SWAGGER_TITLE: ${SWAGGER_TITLE}
+      SWAGGER_DESCRIPTION: ${SWAGGER_DESCRIPTION}
+      SWAGGER_VERSION: ${SWAGGER_VERSION}
+      SWAGGER_PATH: ${SWAGGER_PATH}
+    ports:
+      - '3000:3000'
+    command: sh -c "pnpm migration:run && pnpm seed:run || true && pnpm start:prod"
+    restart: unless-stopped
+
+volumes:
+  carteira-data:

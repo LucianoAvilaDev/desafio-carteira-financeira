@@ -1,10 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { AppController } from './app.controller.js';
 import { AuthModule } from './auth/auth.module.js';
 import { TransfersModule } from './transfers/transfers.module.js';
 import { UsersModule } from './users/users.module.js';
+import { HealthModule } from './health/health.module.js';
+import { LoggingInterceptor } from './common/interceptors/logging.interceptor.js';
 
 @Module({
   imports: [
@@ -17,14 +20,22 @@ import { UsersModule } from './users/users.module.js';
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
       autoLoadEntities: true,
-      synchronize: false, // synchronize: true
-      migrations: ['dist/migrations/*.js'], // ONDE ESTÃO AS MIGRATIONS COMPILADAS
-      migrationsRun: false, // NÃO roda sozinho, você roda na mão
+      synchronize: false,
+      migrations: ['dist/migrations/*.js'],
+      migrationsRun: false,
+      logging: process.env.NODE_ENV === 'development',
     }),
     AuthModule,
     UsersModule,
     TransfersModule,
+    HealthModule,
   ],
   controllers: [AppController],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptor,
+    },
+  ],
 })
 export class AppModule {}

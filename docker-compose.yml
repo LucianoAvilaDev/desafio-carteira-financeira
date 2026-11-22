@@ -24,6 +24,7 @@ services:
         condition: service_healthy
     environment:
       # Main
+      NODE_ENV: production
       PORT: ${PORT}
       API_URL: ${API_URL}
 

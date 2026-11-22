@@ -1,23 +1,27 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, Logger } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module.js';
+import { AllExceptionsFilter } from './common/filters/all-exeptions.filter.js';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const logger = new Logger('Bootstrap');
+  const app = await NestFactory.create(AppModule, {
+    logger: ['log', 'error', 'warn', 'debug'],
+  });
 
-  // Validação global de todas as rotas
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true, // só deixa passar o que está no DTO
-      forbidNonWhitelisted: true, // dá erro 400 se tiver campo a mais do que no DTO
-      transform: true, // converte os tipos que vem em HTTP de acordo com o DTO
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
     }),
   );
 
+  app.useGlobalFilters(new AllExceptionsFilter());
+
   app.enableCors();
 
-  // Configurações do Swagger
   const config = new DocumentBuilder()
     .setTitle(process.env.SWAGGER_TITLE ?? 'Carteira Financeira')
     .setDescription(process.env.SWAGGER_DESCRIPTION ?? '')
@@ -31,12 +35,13 @@ async function bootstrap() {
     doc,
   );
 
-  await app.listen(process.env.PORT ?? 3000);
-  console.log(
-    `API running in ${process.env.API_URL || 'http://localhost'}:${process.env.PORT || 3000}`,
+  const port = Number(process.env.PORT ?? 3000);
+  await app.listen(port);
+  logger.log(
+    `API running in ${process.env.API_URL || 'http://localhost'}:${port}`,
   );
-  console.log(
-    `Documentation running in ${process.env.API_URL || 'http://localhost'}:${process.env.PORT || 3000}${process.env.SWAGGER_PATH ?? '/api/documentation'}`,
+  logger.log(
+    `Documentation running in ${process.env.API_URL || 'http://localhost'}:${port}${process.env.SWAGGER_PATH ?? '/api/documentation'}`,
   );
 }
 void bootstrap();

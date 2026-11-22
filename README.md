@@ -38,10 +38,10 @@ Antes de começar, precisa ter instalado:
 
 ```bash
 # Clona o projeto
-git clone https://github.com/LucianoAvilaDev/desafio-carteira-financeira-oficial.git
+git clone https://github.com/LucianoAvilaDev/desafio-carteira-financeira.git
 
 # Acessa a pasta com o projeto
-cd desafio-carteira-financeira-oficial
+cd desafio-carteira-financeira
 
 # Instala dependências
 pnpm install

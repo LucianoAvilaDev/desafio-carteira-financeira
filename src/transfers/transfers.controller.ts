@@ -14,7 +14,7 @@ import { GetTransfersQueryDto } from './dto/get-transfers-query.dto.js';
 import { TransferResponseDto } from './dto/transfer-response.dto.js';
 import { TransfersService } from './transfers.service.js';
 
-@ApiTags('transfers')
+@ApiTags('Transfers')
 @Controller('transfers')
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth()

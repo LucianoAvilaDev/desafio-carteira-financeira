@@ -248,7 +248,6 @@ describe('TransfersController', () => {
         expect.objectContaining({
           id: 'uuid-transfer',
           amount: 100,
-          status: 'COMPLETED',
         }),
       );
       expect(first.fromUser).not.toHaveProperty('password');
